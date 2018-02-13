@@ -10,7 +10,7 @@ int set(char s[6][5],char key[]);
 int rem(char s[6][5], char key[]);
 void print(char s[6][5]);
 char* cToSend(char c);
-char remap(char c);
+int remap(int n);
 int modVal(int code);
 
 int main(void) {
@@ -39,11 +39,11 @@ int main(void) {
 			else{
 				if((int)ev.value == 1){
 					//sprintf(code,"%x",(int)ev.code);
-					set(keys,cToSend((int)ev.code));
+					set(keys,cToSend(remap((int)ev.code)));
 				}
 				else if((int)ev.value == 0){
 					//sprintf(code, "%x",(int)ev.code);
-					rem(keys,cToSend((int)ev.code));
+					rem(keys,cToSend(remap((int)ev.code)));
 				}
 			}		
 			if(mods == 0){
@@ -164,9 +164,9 @@ int modVal(int code){
 			return 0;
 	}
 }
-char remap(char c){
-	switch(c){
+int remap(int n){
+	switch(n){
 		default:
-			return c;
+			return n;
 	}
 }
