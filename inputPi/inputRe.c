@@ -47,11 +47,13 @@ int main(void) {
 				}
 			}		
 			if(mods == 0){
-				//printf("\\0");
 				printf("\\0\\0\\%s\\%s\\%s\\%s\\%s\\%s\n",keys[0],keys[1],keys[2],keys[3],keys[4],keys[5]);
+				//system("echo \\0\\0\\%s\\%s\\%s\\%s\\%s\\%s > /dev/ttyAMA0",keys[0],keys[1],keys[2],keys[3],keys[4],keys[5]);
 			}
 			else{
 				printf("\\0\\x%02x\\%s\\%s\\%s\\%s\\%s\\%s\n",mods,keys[0],keys[1],keys[2],keys[3],keys[4],keys[5]);
+				//system("echo \\0\\x%02x\\%s\\%s\\%s\\%s\\%s\\%s > /dev/ttyAMA0",mods,keys[0],keys[1],keys[2],keys[3],keys[4],keys[5]);
+				
 			}
 			//printf("\\0");
 			//for(int i = 0; i < 6; i++){
