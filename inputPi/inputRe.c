@@ -39,11 +39,11 @@ int main(void) {
 			else{
 				if((int)ev.value == 1){
 					//sprintf(code,"%x",(int)ev.code);
-					set(keys,cToSend(inToC((int)ev.code)));
+					set(keys,cToSend(remap(inToC((int)ev.code))));
 				}
 				else if((int)ev.value == 0){
 					//sprintf(code, "%x",(int)ev.code);
-					rem(keys,cToSend(inToC((int)ev.code)));
+					rem(keys,cToSend(remap(inToC((int)ev.code))));
 				}
 			}
 			if(mods == 0){
@@ -213,6 +213,13 @@ int modVal(int code){
 			break;
 		default:
 			return 0;
+			break;
+	}
+}
+char remap(char c){
+	switch(c){
+		default:
+			return c:
 			break;
 	}
 }
