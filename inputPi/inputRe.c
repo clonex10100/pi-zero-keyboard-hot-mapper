@@ -138,7 +138,7 @@ char* cToSend(char c){
 			return "x1c";
 		case KEY_Z:
 			return "x1d";
-		defualt:
+		default:
 			return "0";
     }
 }
