@@ -39,11 +39,11 @@ int main(void) {
 			else{
 				if((int)ev.value == 1){
 					//sprintf(code,"%x",(int)ev.code);
-					set(keys,inToC((int)ev.code));
+					set(keys,cToSend((int)ev.code));
 				}
 				else if((int)ev.value == 0){
 					//sprintf(code, "%x",(int)ev.code);
-					rem(keys,inToC((int)ev.code));
+					rem(keys,cToSend((int)ev.code));
 				}
 			}
 			if(mods == 0){
@@ -88,113 +88,81 @@ char* cToSend(char c){
 	switch(c){
 		case KEY_A:
 			return "x04";
-			break;
 		case KEY_B:
 			return "x05";
-			break;
 		case KEY_C:
 			return "x06";
-			break;
 		case KEY_D:
 			return "x07";
-			break;
 		case KEY_E:
 			return "x08";
-			break;
 		case KEY_F:
 			return "x09";
-			break;
 		case KEY_G:
 			return "x0a";
-			break;
 		case KEY_H:
 			return "x0b";
-			break;
 		case KEY_I:
 			return "x0c";
-			break;
 		case KEY_J:
 			return "x0d";
-			break;
 		case KEY_K:
 			return "x0e";
-			break;
 		case KEY_L:
 			return "x0f";
-			break;
 		case KEY_M:
 			return "x10";
-			break;
 		case KEY_N:
 			return "x11";
-			break;
 		case KEY_O:
 			return "x12";
-			break;
 		case KEY_P:
 			return "x13";
-			break;
 		case KEY_Q:
 			return "x14";
-			break;
 		case KEY_R:
 			return "x15";
-			break;
 		case KEY_S:
 			return "x16";
-			break;
 		case KEY_T:
 			return "x17";
-			break;
 		case KEY_U:
 			return "x18";
-			break;
 		case KEY_V:
 			return "x19";
-			break;
 		case KEY_W:
 			return "x1a";
-			break;
 		case KEY_X:
 			return "x1b";
-			break;
 		case KEY_Y:
 			return "x1c";
-			break;
 		case KEY_Z:
 			return "x1d";
-			break;
+		defualt:
+			return "0";
     }
 }
 int modVal(int code){
 	switch(code){
 		case 29:
 			return 1;
-			break;
 		case 42:
 			return 2;
-			break;
 		case 56:
 			return 4;
-			break;
 		case 97:
 			return 16;
-			break;
 		case 54:
 			return 32;
-			break;
 		case 100:
 			return 64;
-			break;
 		default:
 			return 0;
-			break;
 	}
 }
 char remap(char c){
 	switch(c){
 		default:
 			return c;
-			break;
 	}
 }
