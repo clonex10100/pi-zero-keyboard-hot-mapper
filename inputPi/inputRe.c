@@ -154,7 +154,7 @@ int modVal(int code){
 			return 2;
 		case KEY_LEFTALT:
 			return 4;
-		case: KEY_LEFTMETA:
+		case KEY_LEFTMETA:
 			return 8;
 		case KEY_RIGHTCTRL:
 			return 16;
