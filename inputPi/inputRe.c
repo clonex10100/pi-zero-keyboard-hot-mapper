@@ -11,6 +11,7 @@ int rem(char s[7][5], char key[]);
 void print(char s[7][5]);
 char* cToSend(char c);
 char inToC(int n);
+char remap(char c);
 int modVal(int code);
 
 int main(void) {
@@ -28,12 +29,12 @@ int main(void) {
 		if (ev.type == EV_KEY && ev.value >= 0 && ev.value <= 2){
 			printf("%i 0x%04x (%d)\n", (int)ev.value, (int)ev.code, (int)ev.code);
 			//if it's a mod key do somthing else
-			if(modval((int)ev.code) != 0){
+			if(modVal((int)ev.code) != 0){
 				if((int)ev.value == 1){
-					mods += modval((int)ev.code);
+					mods += modVal((int)ev.code);
 				}
 				else if((int)ev.value == 0){
-					mods -= modval((int)ev.code);
+					mods -= modVal((int)ev.code);
 				}
 			}
 			else{
@@ -50,7 +51,7 @@ int main(void) {
 				printf("\0");
 			}
 			else{
-				printf("\\0x%04",mods)
+				printf("\\0x%04",mods);
 			}
 			for(int i = 0; i < 7; i++){
 				printf("\\%s",keys[i]);
@@ -219,7 +220,7 @@ int modVal(int code){
 char remap(char c){
 	switch(c){
 		default:
-			return c:
+			return c;
 			break;
 	}
 }
