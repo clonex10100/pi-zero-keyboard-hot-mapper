@@ -29,19 +29,19 @@ int main(void) {
 			printf("%i 0x%04x (%d)\n", (int)ev.value, (int)ev.code, (int)ev.code);
 			//if it's a mod key do somthing else
 			if(modval((int)ev.code) != 0){
-				if(ev.value == 1){
+				if((int)ev.value == 1){
 					mods += modval((int)ev.code);
 				}
-				else if(ev.value == 0){
+				else if((int)ev.value == 0){
 					mods -= modval((int)ev.code);
 				}
 			}
 			else{
-				if(ev.value == 1){
+				if((int)ev.value == 1){
 					//sprintf(code,"%x",(int)ev.code);
 					set(keys,cToSend(inToC((int)ev.code)));
 				}
-				else if(ev.value == 0){
+				else if((int)ev.value == 0){
 					//sprintf(code, "%x",(int)ev.code);
 					rem(keys,cToSend(inToC((int)ev.code)));
 				}
