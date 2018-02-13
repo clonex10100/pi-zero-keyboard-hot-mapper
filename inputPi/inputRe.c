@@ -50,10 +50,10 @@ int main(void) {
 		printf("\0");
 	}
 	else{
-		printf("/0x%04",mods)
+		printf("\\0x%04",mods)
 	}
 	for(int i = 0; i < 7; i++){
-		printf("\%s",keys[i]);
+		printf("\\%s",keys[i]);
 	}
 	printf("\n");
 	//print(keys);
