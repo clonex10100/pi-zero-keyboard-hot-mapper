@@ -148,18 +148,22 @@ char* cToSend(char c){
 }
 int modVal(int code){
 	switch(code){
-		case 29:
+		case KEY_LEFTCTRL:
 			return 1;
-		case 42:
+		case KEY_LEFTSHIFT:
 			return 2;
-		case 56:
+		case KEY_LEFTALT:
 			return 4;
-		case 97:
+		case: KEY_LEFTMETA:
+			return 8;
+		case KEY_RIGHTCTRL:
 			return 16;
-		case 54:
+		case KEY_RIGHTSHIFT:
 			return 32;
-		case 100:
+		case KEY_RIGHTALT:
 			return 64;
+		case KEY_RIGHTMETA:
+			return 128;
 		default:
 			return 0;
 	}
