@@ -11,12 +11,14 @@ int rem(char s[7][5], char key[]);
 void print(char s[7][5]);
 char* cToSend(char c);
 char inToC(int n);
+int modVal(int code);
 
 int main(void) {
   char keys[7][5];
   char code[5];
+  int mods = 0;
   for(int i = 0; i < 7; i++){
-    strncpy(keys[i], "00", 5);
+    strncpy(keys[i], "0", 5);
   }
   struct input_event ev;
   ssize_t n;
@@ -26,8 +28,13 @@ int main(void) {
       if (ev.type == EV_KEY && ev.value >= 0 && ev.value <= 2){
         printf("%i 0x%04x (%d)\n", (int)ev.value, (int)ev.code, (int)ev.code);
 	//if it's a mod key do somthing else
-	if(0){
-	
+	if(modval((int)ev.code) != 0){
+		if(ev.value == 1){
+			mods += modval((int)ev.code);
+		}
+		else if(ev.value == 0){
+			mods -= modval((int)ev.code);
+		+
 	}
 	else{
 	    if(ev.value == 1){
@@ -39,7 +46,17 @@ int main(void) {
 			rem(keys,cToSend(inToC((int)ev.code)));
 		}
 	}
-	print(keys);
+	if(mods == 0){
+		printf("\0");
+	}
+	else{
+		printf("/0x%04",mods)
+	}
+	for(int i = 0; i < 7; i++){
+		printf("\%s",keys[i]);
+	}
+	printf("\n");
+	//print(keys);
 	//output
       }
     }
@@ -47,7 +64,7 @@ int main(void) {
 
 int set(char s[7][5],char key[]){
   for(int i = 0; i < 7; i++){
-    if(strcmp(s[i],"00") == 0){
+    if(strcmp(s[i],"0") == 0){
       strncpy(s[i],key,5);
       return 0;
     }
@@ -57,7 +74,7 @@ int set(char s[7][5],char key[]){
 int rem(char s[7][5], char key[]){
   for(int i = 0; i < 7; i++){
     if(strcmp(s[i], key) == 0){
-      strncpy(s[i], "00",3);
+      strncpy(s[i], "0",3);
       return 0;
     }
   }
@@ -178,3 +195,28 @@ char inToC(int n){
     return 't';
 }
 
+int modVal(int code){
+	switch(code){
+		case 29:
+			return 1;
+			break;
+		case 42:
+			return 2;
+			break;
+		case 56:
+			return 4;
+			break;
+		case 97:
+			return 16;
+			break;
+		case 54:
+			return 32;
+			break;
+		case 100:
+			return 64;
+			break;
+		default:
+			return 0;
+			break;
+	}
+}
