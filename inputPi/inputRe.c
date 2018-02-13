@@ -10,7 +10,6 @@ int set(char s[7][5],char key[]);
 int rem(char s[7][5], char key[]);
 void print(char s[7][5]);
 char* cToSend(char c);
-char inToC(int n);
 char remap(char c);
 int modVal(int code);
 
@@ -40,11 +39,11 @@ int main(void) {
 			else{
 				if((int)ev.value == 1){
 					//sprintf(code,"%x",(int)ev.code);
-					set(keys,cToSend(remap(inToC((int)ev.code))));
+					set(keys,inToC((int)ev.code));
 				}
 				else if((int)ev.value == 0){
 					//sprintf(code, "%x",(int)ev.code);
-					rem(keys,cToSend(remap(inToC((int)ev.code))));
+					rem(keys,inToC((int)ev.code));
 				}
 			}
 			if(mods == 0){
@@ -87,111 +86,86 @@ void print(char s[7][5]){
 }
 char* cToSend(char c){
 	switch(c){
-		case 'a':
+		case KEY_A:
 			return "x04";
 			break;
-		case 'b':
+		case KEY_B:
 			return "x05";
 			break;
-		case 'c':
+		case KEY_C:
 			return "x06";
 			break;
-		case 'd':
+		case KEY_D:
 			return "x07";
 			break;
-		case 'e':
+		case KEY_E:
 			return "x08";
 			break;
-		case 'f':
+		case KEY_F:
 			return "x09";
 			break;
-		case 'g':
+		case KEY_G:
 			return "x0a";
 			break;
-		case 'h':
+		case KEY_H:
 			return "x0b";
 			break;
-		case 'i':
+		case KEY_I:
 			return "x0c";
 			break;
-		case 'j':
+		case KEY_J:
 			return "x0d";
 			break;
-		case 'k':
+		case KEY_K:
 			return "x0e";
 			break;
-		case 'l':
+		case KEY_L:
 			return "x0f";
 			break;
-		case 'm':
+		case KEY_M:
 			return "x10";
 			break;
-		case 'n':
+		case KEY_N:
 			return "x11";
 			break;
-		case 'o':
+		case KEY_O:
 			return "x12";
 			break;
-		case 'p':
+		case KEY_P:
 			return "x13";
 			break;
-		case 'q':
+		case KEY_Q:
 			return "x14";
 			break;
-		case 'r':
+		case KEY_R:
 			return "x15";
 			break;
-		case 's':
+		case KEY_S:
 			return "x16";
 			break;
-		case 't':
+		case KEY_T:
 			return "x17";
 			break;
-		case 'u':
+		case KEY_U:
 			return "x18";
 			break;
-		case 'v':
+		case KEY_V:
 			return "x19";
 			break;
-		case 'w':
+		case KEY_W:
 			return "x1a";
 			break;
-		case 'x':
+		case KEY_X:
 			return "x1b";
 			break;
-		case 'y':
+		case KEY_Y:
 			return "x1c";
 			break;
-		case 'z':
+		case KEY_Z:
 			return "x1d";
 			break;
     }
 }
-char inToC(int n){
-	switch(n)
-	{
-		case 16:
-			return 'q';
-			break;
-		case 17:
-			return 'w';
-			break;
-		case 18:
-			return 'e';
-			break;
-		case 19:
-			return 'r';
-			break;
-		case 20:
-			return 't';
-			break;
-		case 30:
-			return 'y';
-			break;
-	}
-	return 't';
-}
-
 int modVal(int code){
 	switch(code){
 		case 29:
