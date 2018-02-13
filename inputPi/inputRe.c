@@ -48,10 +48,10 @@ int main(void) {
 				}
 			}
 			if(mods == 0){
-				printf("\0");
+				printf("\\0");
 			}
 			else{
-				printf("\\0x%04",mods);
+				printf("\\x%02x",mods);
 			}
 			for(int i = 0; i < 7; i++){
 				printf("\\%s",keys[i]);
