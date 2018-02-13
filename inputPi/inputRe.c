@@ -6,18 +6,18 @@
 #include <string.h>
 #include <stdio.h>
 
-int set(char s[7][5],char key[]);
-int rem(char s[7][5], char key[]);
-void print(char s[7][5]);
+int set(char s[6][5],char key[]);
+int rem(char s[6][5], char key[]);
+void print(char s[6][5]);
 char* cToSend(char c);
 char remap(char c);
 int modVal(int code);
 
 int main(void) {
-	char keys[7][5];
+	char keys[6][5];
 	char code[5];
 	int mods = 0;
-	for(int i = 0; i < 7; i++){
+	for(int i = 0; i < 6; i++){
 		strncpy(keys[i], "0", 5);
 	}
 	struct input_event ev;
@@ -45,13 +45,14 @@ int main(void) {
 					//sprintf(code, "%x",(int)ev.code);
 					rem(keys,cToSend((int)ev.code));
 				}
-			}
+			}		
 			if(mods == 0){
 				printf("\\0");
 			}
 			else{
 				printf("\\x%02x",mods);
 			}
+			printf("\\0");
 			for(int i = 0; i < 7; i++){
 				printf("\\%s",keys[i]);
 			}
@@ -61,8 +62,8 @@ int main(void) {
 		}
 	}
 }
-int set(char s[7][5],char key[]){
-	for(int i = 0; i < 7; i++){
+int set(char s[6][5],char key[]){
+	for(int i = 0; i < 6; i++){
 		if(strcmp(s[i],"0") == 0){
 			strncpy(s[i],key,5);
 			return 0;
@@ -70,8 +71,8 @@ int set(char s[7][5],char key[]){
 	}
 	return -1;
 }
-int rem(char s[7][5], char key[]){
-	for(int i = 0; i < 7; i++){
+int rem(char s[6][5], char key[]){
+	for(int i = 0; i < 6; i++){
 		if(strcmp(s[i], key) == 0){
 			strncpy(s[i], "0",3);
 			return 0;
@@ -79,8 +80,8 @@ int rem(char s[7][5], char key[]){
 	}
 	return -1;
 }
-void print(char s[7][5]){
-	for(int i = 0; i < 7; i++){
+void print(char s[6][5]){
+	for(int i = 0; i < 6; i++){
 		printf("%s\n",s[i]);
 	}
 }
