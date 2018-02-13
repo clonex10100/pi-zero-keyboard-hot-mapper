@@ -34,7 +34,7 @@ int main(void) {
 		}
 		else if(ev.value == 0){
 			mods -= modval((int)ev.code);
-		+
+		}
 	}
 	else{
 	    if(ev.value == 1){
