@@ -27,7 +27,7 @@ int main(void) {
         while(1){
                 n = read(file, &ev, sizeof ev);
                 if (ev.type == EV_KEY && ev.value >= 0 && ev.value <= 2){
-                        printf("%i 0x%04x (%d)\n", (int)ev.value, (int)ev.code, (int)ev.code);
+                        //printf("%i 0x%04x (%d)\n", (int)ev.value, (int)ev.code, (int)ev.code);
                         //if it's a mod key do somthing else
                         if(modVal((int)ev.code) != 0){
                                 if((int)ev.value == 1){
