@@ -91,6 +91,26 @@ void print(char s[6][5]){
 }
 char* cToSend(char c){
         switch(c){
+		case KEY_1:
+			return "x1e";
+		case KEY_2:
+			return "x1f";
+		case KEY_3:
+			return "x20";
+		case KEY_4:
+			return "x21";
+		case KEY_5:
+			return "x22";
+		case KEY_6:
+			return "x23";
+		case KEY_7:
+			return "x24";
+		case KEY_8:
+			return "x25";
+		case KEY_9:
+			return "x26";
+		case KEY_0:
+			return "x27";
                 case KEY_A:
                         return "x04";
                 case KEY_B:
@@ -143,6 +163,38 @@ char* cToSend(char c){
                         return "x1c";
                 case KEY_Z:
                         return "x1d";
+		case KEY_ENTER:
+			return "x28";
+		case KEY_ESC:
+			return "x29";
+		case KEY_BACKSPACE:
+			return "x2a";
+		case KEY_TAB:
+			return "x2b";
+		case KEY_SPACE:
+			return "x2c";
+		case KEY_MINUS:
+			return "x2d";
+		case KEY_EQUAL:
+			return "x2e";
+		case KEY_LEFTBRACE:
+			return "x2f";
+		case KEY_RIGHTBRACE:
+			return "x30";
+		case KEY_BACKSLASH:
+			return "x31";
+		case KEY_SEMICOLON:
+			return "x33";
+		case KEY_APOSTROPHE:
+			return "x34";
+		case KEY_GRAVE:
+			return "x35";
+		case KEY_COMMA:
+			return "x36";
+		case KEY_DOT:
+			return "x37";
+		case KEY_SLASH:
+			return "x38";
                 default:
                         return "0";
     }
