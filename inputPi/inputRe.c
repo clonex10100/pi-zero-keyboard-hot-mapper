@@ -27,7 +27,7 @@ int main(void) {
         while(1){
                 n = read(file, &ev, sizeof ev);
                 if (ev.type == EV_KEY && ev.value >= 0 && ev.value <= 2){
-(int)ev.code);
+                        printf("%i 0x%04x (%d)\n", (int)ev.value, (int)ev.code, (int)ev.code);
                         //if it's a mod key do somthing else
                         if(modVal((int)ev.code) != 0){
                                 if((int)ev.value == 1){
@@ -44,20 +44,16 @@ int main(void) {
                                 }
                                 else if((int)ev.value == 0){
                                         //sprintf(code, "%x",(int)ev.code);
-                                        set(keys,cToSend(remap((int)ev.code)));
-                                }
-                                else if((int)ev.value == 0){
-                                        //sprintf(code, "%x",(int)ev.code);
                                         rem(keys,cToSend(remap((int)ev.code)));
                                 }
                         }
                         if(mods == 0){
-ys[5]);
-/dev/ttyAMA0",keys[0],keys[1],keys[2],keys[3],keys[4],keys[5]);
+                                sprintf(out,"exec echo \\\\0\\\\0\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s > /dev/ttyAMA0",keys[0],keys[1],keys[2],keys[3],keys[4],keys[5]);
+                                //system("echo \\0\\0\\%s\\%s\\%s\\%s\\%s\\%s > /dev/ttyAMA0",keys[0],keys[1],keys[2],keys[3],keys[4],keys[5]);
                         }
                         else{
-eys[4],keys[5]);
-s > /dev/ttyAMA0",mods,keys[0],keys[1],keys[2],keys[3],keys[4],keys[5]);
+                                sprintf(out,"exec echo \\\\0\\\\x%02x\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s > /dev/ttyAMA0",mods,keys[0],keys[1],keys[2],keys[3],keys[4],keys[5]);
+                                //system("echo \\0\\x%02x\\%s\\%s\\%s\\%s\\%s\\%s > /dev/ttyAMA0",mods,keys[0],keys[1],keys[2],keys[3],keys[4],keys[5]);
                         }
                         system(out);
                         //printf("\\0");
@@ -66,6 +62,7 @@ s > /dev/ttyAMA0",mods,keys[0],keys[1],keys[2],keys[3],keys[4],keys[5]);
                         //}
                         //printf("\n");
                         //output
+
                 }
         }
 }
@@ -178,3 +175,4 @@ int remap(int n){
                         return n;
         }
 }
+
