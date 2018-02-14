@@ -125,6 +125,8 @@ char* cToSend(char c){
                         return "x09";
                 case KEY_G:
                         return "x0a";
+                case KEY_G:
+                        return "x0a";
                 case KEY_H:
                         return "x0b";
                 case KEY_I:
