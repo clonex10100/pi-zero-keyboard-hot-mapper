@@ -15,7 +15,6 @@ int modVal(int code);
 
 int main(void) {
         char keys[6][5];
-        char code[5];
         char out[100];
         int mods = 0;
         for(int i = 0; i < 6; i++){
@@ -68,8 +67,11 @@ int main(void) {
 }
 int set(char s[6][5],char key[]){
         for(int i = 0; i < 6; i++){
-                if(strcmp(s[i],"0") == 0){
-                        strncpy(s[i],key,5);
+                if([i][0] == '0'){
+			s[i][0] = key[0];
+			s[i][1] = key[1];
+			s[i][2] = key[2];
+			s[i][3] = '\0';
                         return 0;
                 }
         }
@@ -78,7 +80,8 @@ int set(char s[6][5],char key[]){
 int rem(char s[6][5], char key[]){
         for(int i = 0; i < 6; i++){
                 if(strcmp(s[i], key) == 0){
-                        strncpy(s[i], "0",3);
+                        s[i][0] = '0';
+			s[i][1] = '\0';
                         return 0;
                 }
         }
@@ -199,7 +202,7 @@ char* cToSend(char c){
                         return "0";
     }
 }
-int modVal(int code){
+int modVal(int){
         switch(code){
                 case KEY_LEFTCTRL:
                         return 1;
