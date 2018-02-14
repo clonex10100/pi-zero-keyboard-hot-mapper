@@ -38,29 +38,21 @@ int main(void) {
                         }
                         else{
                                 if((int)ev.value == 1){
-                                        //sprintf(code,"%x",(int)ev.code);
                                         set(keys,cToSend(remap((int)ev.code)));
                                 }
                                 else if((int)ev.value == 0){
-                                        //sprintf(code, "%x",(int)ev.code);
-                                        rem(keys,cToSend(remap((int)ev.code)));
+					rem(keys,cToSend(remap((int)ev.code)));
                                 }
                         }
                         if(mods == 0){
                                 sprintf(out,"exec echo \\\\0\\\\0\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s > /dev/ttyAMA0",keys[0],keys[1],keys[2],keys[3],keys[4],keys[5]);
-                                //system("echo \\0\\0\\%s\\%s\\%s\\%s\\%s\\%s > /dev/ttyAMA0",keys[0],keys[1],keys[2],keys[3],keys[4],keys[5]);
+                              
                         }
                         else{
                                 sprintf(out,"exec echo \\\\0\\\\x%02x\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s > /dev/ttyAMA0",mods,keys[0],keys[1],keys[2],keys[3],keys[4],keys[5]);
-                                //system("echo \\0\\x%02x\\%s\\%s\\%s\\%s\\%s\\%s > /dev/ttyAMA0",mods,keys[0],keys[1],keys[2],keys[3],keys[4],keys[5]);
                         }
                         system(out);
-                        //printf("\\0");
-                        //for(int i = 0; i < 6; i++){
-                                //printf("\\%s",keys[i]);
-                        //}
-                        //printf("\n");
-                        //output
+                        //printf(out());
 
                 }
         }
