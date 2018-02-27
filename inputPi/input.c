@@ -8,7 +8,6 @@
 
 int set(char s[6][5],char key[]);
 int rem(char s[6][5], char key[]);
-void print(char s[6][5]);
 char* cToSend(char c);
 int remap(int n);
 int modVal(int code);
@@ -52,8 +51,6 @@ int main(void) {
                                 sprintf(out,"exec echo \\\\0\\\\x%02x\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s > /dev/ttyAMA0",mods,keys[0],keys[1],keys[2],keys[3],keys[4],keys[5]);
                         }
                         system(out);
-                        //printf(out());
-
                 }
         }
 }
@@ -78,11 +75,6 @@ int rem(char s[6][5], char key[]){
                 }
         }
         return -1;
-}
-void print(char s[6][5]){
-        for(int i = 0; i < 6; i++){
-                printf("%s\n",s[i]);
-        }
 }
 char* cToSend(char c){
         switch(c){
