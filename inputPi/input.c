@@ -6,18 +6,18 @@
 #include <string.h>
 #include <stdio.h>
 
-int set(char s[6][5],char key[]);
-int rem(char s[6][5], char key[]);
+int set(int s[6],int key);
+int rem(int s[6], int key);
 char* cToSend(char c);
 int remap(int n);
 int modVal(int code);
 
 int main(void) {
-        char keys[6][5];
+        int keys[6];
         char out[100];
         int mods = 0;
         for(int i = 0; i < 6; i++){
-                strncpy(keys[i], "0", 5);
+                keys[i] = 0;
         }
         struct input_event ev;
         ssize_t n;
@@ -37,40 +37,36 @@ int main(void) {
                         }
                         else{
                                 if((int)ev.value == 1){
-                                        set(keys,cToSend(remap((int)ev.code)));
+                                        set(keys,remap((int)ev.code));
                                 }
                                 else if((int)ev.value == 0){
-					rem(keys,cToSend(remap((int)ev.code)));
+					rem(keys,remap((int)ev.code));
                                 }
                         }
                         if(mods == 0){
-                                sprintf(out,"exec echo \\\\0\\\\0\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s > /dev/ttyAMA0",keys[0],keys[1],keys[2],keys[3],keys[4],keys[5]);
+                                sprintf(out,"exec echo \\\\0\\\\0\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s > /dev/ttyAMA0",cToSend(keys[0]),cToSend(keys[1]),cToSend(keys[2]),cToSend(keys[3]),cToSend(keys[4]),cToSend(keys[5]));
                               
                         }
                         else{
-                                sprintf(out,"exec echo \\\\0\\\\x%02x\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s > /dev/ttyAMA0",mods,keys[0],keys[1],keys[2],keys[3],keys[4],keys[5]);
+                                sprintf(out,"exec echo \\\\0\\\\x%02x\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s > /dev/ttyAMA0",mods,cToSend(keys[0]),cToSend(keys[1]),cToSend(keys[2]),cToSend(keys[3]),cToSend(keys[4]),cToSend(keys[5]));
                         }
                         system(out);
                 }
         }
 }
-int set(char s[6][5],char key[]){
+int set(int s[6],int key);{
         for(int i = 0; i < 6; i++){
-                if([i][0] == '0'){
-			s[i][0] = key[0];
-			s[i][1] = key[1];
-			s[i][2] = key[2];
-			s[i][3] = '\0';
+                if([i] == 0){
+			s[i] = key;
                         return 0;
                 }
         }
         return -1;
 }
-int rem(char s[6][5], char key[]){
+int rem(int s[6], int key){
         for(int i = 0; i < 6; i++){
-                if(strcmp(s[i], key) == 0){
-                        s[i][0] = '0';
-			s[i][1] = '\0';
+                if(s[i] == key){
+                        s[i] = 0;
                         return 0;
                 }
         }
