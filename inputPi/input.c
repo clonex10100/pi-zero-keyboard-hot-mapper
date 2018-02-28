@@ -54,7 +54,7 @@ int main(void) {
                 }
         }
 }
-int set(int s[6],int key);{
+int set(int s[6],int key){
         for(int i = 0; i < 6; i++){
                 if([i] == 0){
 			s[i] = key;
