@@ -56,7 +56,7 @@ int main(void) {
 }
 int set(int s[6],int key){
         for(int i = 0; i < 6; i++){
-                if([i] == 0){
+                if(s[i] == 0){
 			s[i] = key;
                         return 0;
                 }
@@ -182,7 +182,7 @@ char* cToSend(char c){
                         return "0";
     }
 }
-int modVal(int){
+int modVal(int code){
         switch(code){
                 case KEY_LEFTCTRL:
                         return 1;
