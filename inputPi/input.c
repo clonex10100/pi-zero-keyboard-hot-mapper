@@ -24,6 +24,8 @@ int main(void) {
 	int size;
         int file = open("/dev/input/event0", O_RDONLY);
 	int outF = open("/home/pi/output.txt", O_WRONLY | O_CREAT);
+	//uncomment for serial
+	//int outF = open("/dev/ttyAMA0", O_RDWR | O_NOCTTY);
         while(1){
                 n = read(file, &ev, sizeof ev);
                 if (ev.type == EV_KEY && ev.value >= 0 && ev.value <= 2){
