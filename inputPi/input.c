@@ -21,7 +21,9 @@ int main(void) {
         }
         struct input_event ev;
         ssize_t n;
+	int size;
         int file = open("/dev/input/event0", O_RDONLY);
+	int outF = open("/home/pi/output.txt, O_WRONLY | O_CREAT);
         while(1){
                 n = read(file, &ev, sizeof ev);
                 if (ev.type == EV_KEY && ev.value >= 0 && ev.value <= 2){
@@ -44,13 +46,17 @@ int main(void) {
                                 }
                         }
                         if(mods == 0){
-                                sprintf(out,"exec echo \\\\0\\\\0\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s > /dev/ttyAMA0",cToSend(keys[0]),cToSend(keys[1]),cToSend(keys[2]),cToSend(keys[3]),cToSend(keys[4]),cToSend(keys[5]));
+                                size = sprintf(out,"\\\\0\\\\0\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s",cToSend(keys[0]),cToSend(keys[1]),cToSend(keys[2]),cToSend(keys[3]),cToSend(keys[4]),cToSend(keys[5]));
                               
                         }
                         else{
-                                sprintf(out,"exec echo \\\\0\\\\x%02x\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s > /dev/ttyAMA0",mods,cToSend(keys[0]),cToSend(keys[1]),cToSend(keys[2]),cToSend(keys[3]),cToSend(keys[4]),cToSend(keys[5]));
+                                size = sprintf(out,"\\\\0\\\\x%02x\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s",mods,cToSend(keys[0]),cToSend(keys[1]),cToSend(keys[2]),cToSend(keys[3]),cToSend(keys[4]),cToSend(keys[5]));
                         }
-                        system(out);
+			if(size != strlen(out)){
+				printf("YOU MESSED UP");
+				return 0;
+			}
+                       	write(outF, out, size);
                 }
         }
 }
