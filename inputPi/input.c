@@ -23,7 +23,7 @@ int main(void) {
         ssize_t n;
 	int size;
         int file = open("/dev/input/event0", O_RDONLY);
-	int outF = open("/home/pi/output.txt, O_WRONLY | O_CREAT);
+	int outF = open("/home/pi/output.txt", O_WRONLY | O_CREAT);
         while(1){
                 n = read(file, &ev, sizeof ev);
                 if (ev.type == EV_KEY && ev.value >= 0 && ev.value <= 2){
