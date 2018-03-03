@@ -11,10 +11,11 @@ int rem(int s[6], int key);
 char* cToSend(char c);
 int remap(int n);
 int modVal(int code);
+void outputPrep(char out[23], int mods, int keys[6]);
 
 int main(void) {
         int keys[6];
-        char out[100];
+        char out[23];
         int mods = 0;
         for(int i = 0; i < 6; i++){
                 keys[i] = 0;
@@ -47,21 +48,46 @@ int main(void) {
 					rem(keys,remap((int)ev.code));
                                 }
                         }
-                        if(mods == 0){
-                                size = sprintf(out,"\\\\0\\\\0\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s",cToSend(keys[0]),cToSend(keys[1]),cToSend(keys[2]),cToSend(keys[3]),cToSend(keys[4]),cToSend(keys[5]));
-                              
-                        }
-                        else{
-                                size = sprintf(out,"\\\\0\\\\x%02x\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s",mods,cToSend(keys[0]),cToSend(keys[1]),cToSend(keys[2]),cToSend(keys[3]),cToSend(keys[4]),cToSend(keys[5]));
-                        }
-			if(size != strlen(out)){
-				printf("YOU MESSED UP");
-				return 0;
-			}
+			outputPrep(out, mods, keys);
                        	write(outF, out, size);
                 }
         }
 }
+void outputPrep(char out[23], int mods, int keys[6]){
+	char temp[4];
+	int len;
+	for(int i = 0; i < 6; i++){
+		if(i == 0){
+			len = sprintf(temp,"%i",mods);
+		}
+		else{
+			len = sprintf(temp,"%i",keys[i-1]);
+		}
+		if(len == 1){
+			out[i*4] = '0';
+			out[i*4+1] = '0';
+			out[i*4+2] = temp[0];
+		}
+		else if(len == 2){
+			out[i*4] = '0';
+			out[i*4+1] = temp[0];
+			out[i*4+2] = temp[1];
+		}
+		else{
+			out[i*4] = temp[0];
+			out[i*4+1] = temp[1];
+			out[i*4+2] = temp[2];
+		}
+		if(i + 1 < 6){
+			out[i*4+3] = ':';
+			out[i*4+4] = '\0';
+		}
+		else{
+			out[i*4+3] = '\0';
+		}
+	}
+}
+
 int set(int s[6],int key){
         for(int i = 0; i < 6; i++){
                 if(s[i] == 0){
@@ -216,7 +242,7 @@ int remap(int n){
         switch(n){
 		case KEY_MINUS:
 			return KEY_LEFTBRACE;
-		case KEY_EQUALS:
+		case KEY_EQUAL:
 			return KEY_RIGHTBRACE;
 		case KEY_Q:
 			return KEY_APOSTROPHE;
