@@ -22,10 +22,12 @@ int main(void){
 
 	int in = open("/dev/ttyAMA0", O_RDWR | O_NOCTTY);
 	struct termios options;
-	//tcgetattr(sfd, &options);
+	tcgetattr(in, &options);
 	options.c_cc[VMIN] = 24;
+	options.c_cc[VTIME] = 0;
+	tcsetattr(in, TCSANOW, &options);
 	while(1){
-		if(read(in,input,23) != 23){
+		if(read(in,input,24) != 24){
 			printf("Error");
 		}
 
