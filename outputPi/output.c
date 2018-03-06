@@ -9,6 +9,7 @@
 
 int cToSend(int c);
 void output(FILE out, int mods, int keys[6]);
+void parse(char input[26], int* mods, int keys[]);
 	
 int main(void){
 	//Buffer for serial input
@@ -17,11 +18,6 @@ int main(void){
 	//Stores currently pressed keys
 	int keys[6];
 	int mods;
-	
-	//Buffer for parsing serial input
-	char buffer[4];
-	buffer[3] = '\0'; 
-	int bIndex;
 	
 	//open keyboard port
 	FILE *out = fopen("/dev/hidg0", "wb");
@@ -47,18 +43,35 @@ int main(void){
 		printf("%s\n",input);
 		
 		//Parses input into keys and mods
-		bIndex = 0;
+		parse(input, &mods, keys);
+
+		//Just for printing. Delete for speed
+		if(mods == 0){
+			printf("\\0\\0\\%s\\%s\\%s\\%s\\%s\\%s",cToSend(keys[0]),cToSend(keys[1]),cToSend(keys[2]),cToSend(keys[3]),cToSend(keys[4]),cToSend(keys[5]));
+							                              
+		}
+		else{
+			printf("\\x%02x\\0\\%s\\%s\\%s\\%s\\%s\\%s",mods,cToSend(keys[0]),cToSend(keys[1]),cToSend(keys[2]),cToSend(keys[3]),cToSend(keys[4]),cToSend(keys[5]));
+		}
+		output(out, mods, keys[]);
+	}
+	
+}
+void parse(char input[26], int* mods, int keys[]){
+		char buffer[4];
+		buffer[3] = '\0'; 
+		int bIndex = 0;
 		for(int i = 0; i < 25; i++){
 			if(input[i] == ':'){
 				bIndex = 0;
 				if(i == 3){
 					//The : at the 3rd postion is right after a mod int
 					printf("mod: %i\n",atoi(buffer));
-					mods = atoi(buffer);
+					*mods = atoi(buffer);
 				}
 				else{
 					printf("key: %i\n",atoi(buffer));
-					keys[((i+1)/4)-2] = atoi(buffer);
+					keys[((i-3)/4)] = atoi(buffer);
 				}
 			}
 			else{
@@ -66,18 +79,6 @@ int main(void){
 				bIndex++;
 			}		
 		}
-		
-		//Just for printing. Delete for speed
-		if(mods == 0){
-			printf("\\\\0\\\\0\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s",cToSend(keys[0]),cToSend(keys[1]),cToSend(keys[2]),cToSend(keys[3]),cToSend(keys[4]),cToSend(keys[5]));
-							                              
-		}
-		else{
-			printf("\\\\x%02x\\\\0\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s",mods,cToSend(keys[0]),cToSend(keys[1]),cToSend(keys[2]),cToSend(keys[3]),cToSend(keys[4]),cToSend(keys[5]));
-		}
-		output(out, mods, keys[]);
-	}
-	
 }
 //Potentially replace fwrite with write
 void output(FILE out, int mods, int keys[6]){
