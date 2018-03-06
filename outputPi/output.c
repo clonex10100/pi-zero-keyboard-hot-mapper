@@ -71,7 +71,7 @@ void parse(char input[26], int* mods, int keys[]){
 				}
 				else{
 					printf("key: %i\n",atoi(buffer));
-					keys[((i-3)/4)] = atoi(buffer);
+					keys[((i-3)/4)] = cToSend(atoi(buffer));
 				}
 			}
 			else{
@@ -85,7 +85,7 @@ void output(FILE out, int mods, int keys[6]){
 	fwrite(&mods, 1, 1, out);
 	fwrite(0, 1, 1, out);
 	for(int i = 0; i < 6; i++){
-		fwrite(&cToSend(keys[i]), 1, 1, out);
+		fwrite(&keys[i], 1, 1, out);
 	}
 }
 int cToSend(int c){
