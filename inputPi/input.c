@@ -85,7 +85,7 @@ int main(void) {
 
 //Puts the mods and keys into this format
 //"000:000:000:000:000:/n/0"
-void outputPrep(char out[25], int mods, int keys[6]){
+void outputPrep(char out[26], int mods, int keys[6]){
 	char temp[4];
 	int len;
 	for(int i = 0; i < 7; i++){
