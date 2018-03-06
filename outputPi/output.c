@@ -82,8 +82,10 @@ void parse(char input[26], int* mods, int keys[]){
 }
 //Potentially replace fwrite with write
 void output(FILE out, int mods, int keys[6]){
+	//Hack to have zero pointer 
+	int* zero = 0;
 	fwrite(&mods, 1, 1, out);
-	fwrite(0, 1, 1, out);
+	fwrite(zero, 1, 1, out);
 	for(int i = 0; i < 6; i++){
 		fwrite(&keys[i], 1, 1, out);
 	}
