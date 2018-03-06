@@ -51,6 +51,7 @@ int main(void){
 			if(input[i] == ':'){
 				bIndex = 0;
 				if(i == 3){
+					//The : at the 3rd postion is right after a mod int
 					printf("mod: %i\n",atoi(buffer));
 					mods = atoi(buffer);
 				}
@@ -77,6 +78,7 @@ int main(void){
 	}
 	
 }
+//Potentially replace fwrite with write
 void output(FILE out, int mods, int keys[6]){
 	int zero = 0;
 	fwrite(&mods, 1, 1, out);
