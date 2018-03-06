@@ -192,6 +192,6 @@ int cToSend(int c){
 		case KEY_SLASH:
 			return 0x38;
                 default:
-                        return "0";
+                        return 0;
     }
 }
