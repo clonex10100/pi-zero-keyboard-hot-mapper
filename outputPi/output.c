@@ -11,8 +11,8 @@ int cToSend(int c);
 void output(FILE out, int mods, int keys[6]);
 	
 int main(void){
+	//Buffer for serial input
 	char input[26];
-	//char out[100];
 	
 	//Stores currently pressed keys
 	int keys[6];
