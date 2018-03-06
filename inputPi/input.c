@@ -15,37 +15,51 @@ int modVal(int code);
 void outputPrep(char out[26], int mods, int keys[6]);
 
 int main(void) {
-        int keys[6];
+        //Buffer for serial output
         char out[26];
+	
+	//Holds the value of currenty pressed keys
         int mods = 0;
+	int keys[6];
         for(int i = 0; i < 6; i++){
                 keys[i] = 0;
         }
-        struct input_event ev;
+	
         ssize_t n;
-	int size;
+	
+	//Open keyboard input
         int file = open("/dev/input/event1", O_RDONLY);
-	//int outF = open("/home/pi/output.txt", O_WRONLY | O_CREAT);
-	//uncomment for serial
-	int outF = open("/dev/serial0", O_RDWR | O_NOCTTY);
+	
+	//Holds keyboard events
+	struct input_event ev;
+	
+	//Open serial port
+	int serial = open("/dev/serial0", O_RDWR | O_NOCTTY);
+	
+	//Configure serial options
 	struct termios options;
-	tcgetattr(outF,&options);
+	tcgetattr(serial,&options);
 	cfsetspeed(&options, B9600);
 	options.c_cflag &= ~CSTOPB;
 	options.c_cflag |= CLOCAL;
 	options.c_cflag |= CREAD;
 	cfmakeraw(&options);
-	tcsetattr(outF, TCSANOW, &options);
+	tcsetattr(serial, TCSANOW, &options);
         while(1){
-                n = read(file, &ev, sizeof ev);
+		//Read new keyboard event
+                read(file, &ev, sizeof ev);
+		
+		//If event is a keystroke
                 if (ev.type == EV_KEY && ev.value >= 0 && ev.value <= 2){
-			//printf("%i 0x%04x (%d)\n", (int)ev.value, (int)ev.code, (int)ev.code);
-                        //if it's a mod key do somthing else
+			
+			//Checks if key is a modifier
                         if(modVal((int)ev.code) != 0){
                                 if((int)ev.value == 1){
+					//If it's a downstorke add the valure to mods
                                         mods += modVal((int)ev.code);
                                 }
                                 else if((int)ev.value == 0){
+					//Else subtract it
                                         mods -= modVal((int)ev.code);
                                 }
                         }
@@ -59,16 +73,20 @@ int main(void) {
                         }
 			outputPrep(out, mods, keys);
 			printf("%s\n",out);
-                       	write(outF, out, 26);
-			tcdrain(outF);
+			//Wirte to the serial port
+                       	write(serial, out, 26);
+			tcdrain(serial);
 			//write(outF,"\n",1);
                 }
         }
 }
+
+//Puts the mods and keys into this format
+//"000:000:000:000:000:/n/0"
 void outputPrep(char out[25], int mods, int keys[6]){
 	char temp[4];
 	int len;
-	for(int i = 0; i < 6; i++){
+	for(int i = 0; i < 7; i++){
 		if(i == 0){
 			len = sprintf(temp,"%i",mods);
 		}
@@ -96,6 +114,7 @@ void outputPrep(char out[25], int mods, int keys[6]){
 	out[25] = '\0';
 }
 
+//Adds your key to the first empty space in keys
 int set(int s[6],int key){
         for(int i = 0; i < 6; i++){
                 if(s[i] == 0){
@@ -105,6 +124,8 @@ int set(int s[6],int key){
         }
         return -1;
 }
+
+//Replaces your key with an empty space in keys
 int rem(int s[6], int key){
         for(int i = 0; i < 6; i++){
                 if(s[i] == key){
@@ -137,6 +158,7 @@ int modVal(int code){
                         return 0;
         }
 }
+//This function is what actually remaps the keys. 
 int remap(int n){
         switch(n){
 		case KEY_MINUS:
