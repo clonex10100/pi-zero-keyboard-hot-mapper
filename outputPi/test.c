@@ -10,7 +10,7 @@
 char* cToSend(int c);
 
 int main(void){
-	char input[26];
+	char input[24] = "032:040:032:032:043:001";
 	char out[100];
 
 	int keys[6];
@@ -20,34 +20,17 @@ int main(void){
 	buffer[3] = '\0'; 
 	int bIndex;
 
-	int in = open("/dev/ttyAMA0", O_RDWR | O_NOCTTY);
-	struct termios options;	
-	printf("%i\n",tcgetattr(in, &options));
-	cfmakeraw(&options);
-	cfsetspeed(&options, B9600);
-	options.c_cflag &= ~CSTOPB;
-	options.c_cflag |= CLOCAL;
-	options.c_cflag |= CREAD;
-	options.c_cc[VMIN] = 26;
-	options.c_cc[VTIME] = 0;
-	printf("%i\n",tcsetattr(in,TCSANOW, &options));
-	tcflush(in, TCIFLUSH);
 	while(1){
-		printf("read\n");
-		printf("%i\n",read(in,input,26));
-		printf("%s\n",input);
+
 		bIndex = 0;
-		for(int i = 0; i < 25; i++){
-			//printf("%c\n",input[i]);
+		for(int i = 0; i < 24; i++){
 			if(input[i] == ':'){
 				bIndex = 0;
-				if(i == 3){
-					printf("mod: %i\n",atoi(buffer));
+				if(i == 4){
 					mods = atoi(buffer);
 				}
 				else{
-					printf("key: %i\n",atoi(buffer));
-					keys[((i+1)/4)-2] = atoi(buffer);
+					keys[i/4] = atoi(buffer);
 				}
 			}
 			else{
@@ -56,14 +39,13 @@ int main(void){
 			}		
 		}
 		if(mods == 0){
-			sprintf(out,"exec echo -ne \\\\0\\\\0\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s > /dev/hidg0",cToSend(keys[0]),cToSend(keys[1]),cToSend(keys[2]),cToSend(keys[3]),cToSend(keys[4]),cToSend(keys[5]));
+			sprintf(out,"\\\\0\\\\0\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s",cToSend(keys[0]),cToSend(keys[1]),cToSend(keys[2]),cToSend(keys[3]),cToSend(keys[4]),cToSend(keys[5]));
 							                              
 		}
 		else{
-			sprintf(out,"exec echo -ne \\\\x%02x\\\\0\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s > /dev/hidg0",mods,cToSend(keys[0]),cToSend(keys[1]),cToSend(keys[2]),cToSend(keys[3]),cToSend(keys[4]),cToSend(keys[5]));
+			sprintf(out,"\\\\0\\\\x%02x\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s",mods,cToSend(keys[0]),cToSend(keys[1]),cToSend(keys[2]),cToSend(keys[3]),cToSend(keys[4]),cToSend(keys[5]));
 		}
 		printf("%s\n",out);
-		system(out);
 	}
 	
 }

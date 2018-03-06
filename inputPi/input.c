@@ -5,17 +5,18 @@
 #include <linux/input.h>
 #include <string.h>
 #include <stdio.h>
+#include <termios.h>
 
 int set(int s[6],int key);
 int rem(int s[6], int key);
 char* cToSend(char c);
 int remap(int n);
 int modVal(int code);
-void outputPrep(char out[24], int mods, int keys[6]);
+void outputPrep(char out[26], int mods, int keys[6]);
 
 int main(void) {
         int keys[6];
-        char out[24];
+        char out[26];
         int mods = 0;
         for(int i = 0; i < 6; i++){
                 keys[i] = 0;
@@ -23,14 +24,22 @@ int main(void) {
         struct input_event ev;
         ssize_t n;
 	int size;
-        int file = open("/dev/input/event0", O_RDONLY);
-	int outF = open("/home/pi/output.txt", O_WRONLY | O_CREAT);
+        int file = open("/dev/input/event1", O_RDONLY);
+	//int outF = open("/home/pi/output.txt", O_WRONLY | O_CREAT);
 	//uncomment for serial
-	//int outF = open("/dev/ttyAMA0", O_RDWR | O_NOCTTY);
+	int outF = open("/dev/serial0", O_RDWR | O_NOCTTY);
+	struct termios options;
+	tcgetattr(outF,&options);
+	cfsetspeed(&options, B9600);
+	options.c_cflag &= ~CSTOPB;
+	options.c_cflag |= CLOCAL;
+	options.c_cflag |= CREAD;
+	cfmakeraw(&options);
+	tcsetattr(outF, TCSANOW, &options);
         while(1){
                 n = read(file, &ev, sizeof ev);
                 if (ev.type == EV_KEY && ev.value >= 0 && ev.value <= 2){
-                        //printf("%i 0x%04x (%d)\n", (int)ev.value, (int)ev.code, (int)ev.code);
+			//printf("%i 0x%04x (%d)\n", (int)ev.value, (int)ev.code, (int)ev.code);
                         //if it's a mod key do somthing else
                         if(modVal((int)ev.code) != 0){
                                 if((int)ev.value == 1){
@@ -49,11 +58,14 @@ int main(void) {
                                 }
                         }
 			outputPrep(out, mods, keys);
-                       	write(outF, out, size);
+			printf("%s\n",out);
+                       	write(outF, out, 26);
+			tcdrain(outF);
+			//write(outF,"\n",1);
                 }
         }
 }
-void outputPrep(char out[24], int mods, int keys[6]){
+void outputPrep(char out[25], int mods, int keys[6]){
 	char temp[4];
 	int len;
 	for(int i = 0; i < 6; i++){
@@ -78,11 +90,10 @@ void outputPrep(char out[24], int mods, int keys[6]){
 			out[i*4+1] = temp[1];
 			out[i*4+2] = temp[2];
 		}
-		if(i + 1 < 6){
-			out[i*4+3] = ':';
-			out[i*4+4] = '\0';
-		}
+		out[i*4+3] = ':';
 	}
+	out[24] = '\n';
+	out[25] = '\0';
 }
 
 int set(int s[6],int key){
