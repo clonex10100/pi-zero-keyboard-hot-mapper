@@ -81,9 +81,8 @@ int main(void){
 }
 //Potentially replace fwrite with write
 void output(FILE out, int mods, int keys[6]){
-	int zero = 0;
 	fwrite(&mods, 1, 1, out);
-	fwrite(&zero, 1, 1, out);
+	fwrite(0, 1, 1, out);
 	for(int i = 0; i < 6; i++){
 		fwrite(&cToSend(keys[i]), 1, 1, out);
 	}
