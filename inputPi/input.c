@@ -25,8 +25,6 @@ int main(void) {
                 keys[i] = 0;
         }
 	
-        ssize_t n;
-	
 	//Open keyboard input
         int file = open("/dev/input/event1", O_RDONLY);
 	
@@ -45,6 +43,7 @@ int main(void) {
 	options.c_cflag |= CREAD;
 	cfmakeraw(&options);
 	tcsetattr(serial, TCSANOW, &options);
+	
         while(1){
 		//Read new keyboard event
                 read(file, &ev, sizeof ev);
@@ -71,12 +70,15 @@ int main(void) {
 					rem(keys,remap((int)ev.code));
                                 }
                         }
+			//Prepare for serial transmission
 			outputPrep(out, mods, keys);
+			
+			//TODO: remove
 			printf("%s\n",out);
+			
 			//Wirte to the serial port
                        	write(serial, out, 26);
 			tcdrain(serial);
-			//write(outF,"\n",1);
                 }
         }
 }
