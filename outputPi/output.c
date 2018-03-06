@@ -8,7 +8,8 @@
 #include <stdio.h>
 
 int cToSend(int c);
-
+void output(FILE out, int mods, int keys[6]);
+	
 int main(void){
 	char input[26];
 	//char out[100];
