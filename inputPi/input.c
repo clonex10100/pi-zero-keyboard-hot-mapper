@@ -5,37 +5,61 @@
 #include <linux/input.h>
 #include <string.h>
 #include <stdio.h>
+#include <termios.h>
 
 int set(int s[6],int key);
 int rem(int s[6], int key);
 char* cToSend(char c);
 int remap(int n);
 int modVal(int code);
+void outputPrep(char out[26], int mods, int keys[6]);
 
 int main(void) {
-        int keys[6];
-        char out[100];
+        //Buffer for serial output
+        char out[26];
+	
+	//Holds the value of currenty pressed keys
         int mods = 0;
+	int keys[6];
         for(int i = 0; i < 6; i++){
                 keys[i] = 0;
         }
-        struct input_event ev;
+	
         ssize_t n;
-	int size;
-        int file = open("/dev/input/event0", O_RDONLY);
-	int outF = open("/home/pi/output.txt", O_WRONLY | O_CREAT);
-	//uncomment for serial
-	//int outF = open("/dev/ttyAMA0", O_RDWR | O_NOCTTY);
+	
+	//Open keyboard input
+        int file = open("/dev/input/event1", O_RDONLY);
+	
+	//Holds keyboard events
+	struct input_event ev;
+	
+	//Open serial port
+	int serial = open("/dev/serial0", O_RDWR | O_NOCTTY);
+	
+	//Configure serial options
+	struct termios options;
+	tcgetattr(serial,&options);
+	cfsetspeed(&options, B9600);
+	options.c_cflag &= ~CSTOPB;
+	options.c_cflag |= CLOCAL;
+	options.c_cflag |= CREAD;
+	cfmakeraw(&options);
+	tcsetattr(serial, TCSANOW, &options);
         while(1){
-                n = read(file, &ev, sizeof ev);
+		//Read new keyboard event
+                read(file, &ev, sizeof ev);
+		
+		//If event is a keystroke
                 if (ev.type == EV_KEY && ev.value >= 0 && ev.value <= 2){
-                        //printf("%i 0x%04x (%d)\n", (int)ev.value, (int)ev.code, (int)ev.code);
-                        //if it's a mod key do somthing else
+			
+			//Checks if key is a modifier
                         if(modVal((int)ev.code) != 0){
                                 if((int)ev.value == 1){
+					//If it's a downstorke add the valure to mods
                                         mods += modVal((int)ev.code);
                                 }
                                 else if((int)ev.value == 0){
+					//Else subtract it
                                         mods -= modVal((int)ev.code);
                                 }
                         }
@@ -47,21 +71,50 @@ int main(void) {
 					rem(keys,remap((int)ev.code));
                                 }
                         }
-                        if(mods == 0){
-                                size = sprintf(out,"\\\\0\\\\0\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s",cToSend(keys[0]),cToSend(keys[1]),cToSend(keys[2]),cToSend(keys[3]),cToSend(keys[4]),cToSend(keys[5]));
-                              
-                        }
-                        else{
-                                size = sprintf(out,"\\\\0\\\\x%02x\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s\\\\%s",mods,cToSend(keys[0]),cToSend(keys[1]),cToSend(keys[2]),cToSend(keys[3]),cToSend(keys[4]),cToSend(keys[5]));
-                        }
-			if(size != strlen(out)){
-				printf("YOU MESSED UP");
-				return 0;
-			}
-                       	write(outF, out, size);
+			outputPrep(out, mods, keys);
+			printf("%s\n",out);
+			//Wirte to the serial port
+                       	write(serial, out, 26);
+			tcdrain(serial);
+			//write(outF,"\n",1);
                 }
         }
 }
+
+//Puts the mods and keys into this format
+//"000:000:000:000:000:/n/0"
+void outputPrep(char out[25], int mods, int keys[6]){
+	char temp[4];
+	int len;
+	for(int i = 0; i < 7; i++){
+		if(i == 0){
+			len = sprintf(temp,"%i",mods);
+		}
+		else{
+			len = sprintf(temp,"%i",keys[i-1]);
+		}
+		if(len == 1){
+			out[i*4] = '0';
+			out[i*4+1] = '0';
+			out[i*4+2] = temp[0];
+		}
+		else if(len == 2){
+			out[i*4] = '0';
+			out[i*4+1] = temp[0];
+			out[i*4+2] = temp[1];
+		}
+		else{
+			out[i*4] = temp[0];
+			out[i*4+1] = temp[1];
+			out[i*4+2] = temp[2];
+		}
+		out[i*4+3] = ':';
+	}
+	out[24] = '\n';
+	out[25] = '\0';
+}
+
+//Adds your key to the first empty space in keys
 int set(int s[6],int key){
         for(int i = 0; i < 6; i++){
                 if(s[i] == 0){
@@ -71,6 +124,8 @@ int set(int s[6],int key){
         }
         return -1;
 }
+
+//Replaces your key with an empty space in keys
 int rem(int s[6], int key){
         for(int i = 0; i < 6; i++){
                 if(s[i] == key){
@@ -80,116 +135,7 @@ int rem(int s[6], int key){
         }
         return -1;
 }
-char* cToSend(char c){
-        switch(c){
-		case KEY_1:
-			return "x1e";
-		case KEY_2:
-			return "x1f";
-		case KEY_3:
-			return "x20";
-		case KEY_4:
-			return "x21";
-		case KEY_5:
-			return "x22";
-		case KEY_6:
-			return "x23";
-		case KEY_7:
-			return "x24";
-		case KEY_8:
-			return "x25";
-		case KEY_9:
-			return "x26";
-		case KEY_0:
-			return "x27";
-                case KEY_A:
-                        return "x04";
-                case KEY_B:
-                        return "x05";
-                case KEY_C:
-                        return "x06";
-                case KEY_D:
-                        return "x07";
-                case KEY_E:
-                        return "x08";
-                case KEY_F:
-                        return "x09";
-                case KEY_G:
-                        return "x0a";
-                case KEY_H:
-                        return "x0b";
-                case KEY_I:
-                        return "x0c";
-                case KEY_J:
-                        return "x0d";
-                case KEY_K:
-                        return "x0e";
-                case KEY_L:
-                        return "x0f";
-                case KEY_M:
-                        return "x10";
-                case KEY_N:
-                        return "x11";
-                case KEY_O:
-                        return "x12";
-                case KEY_P:
-                        return "x13";
-                case KEY_Q:
-                        return "x14";
-                case KEY_R:
-                        return "x15";
-                case KEY_S:
-                        return "x16";
-                case KEY_T:
-                        return "x17";
-                case KEY_U:
-                        return "x18";
-                case KEY_V:
-                        return "x19";
-                case KEY_W:
-                        return "x1a";
-                case KEY_X:
-                        return "x1b";
-                case KEY_Y:
-                        return "x1c";
-                case KEY_Z:
-                        return "x1d";
-		case KEY_ENTER:
-			return "x28";
-		case KEY_ESC:
-			return "x29";
-		case KEY_BACKSPACE:
-			return "x2a";
-		case KEY_TAB:
-			return "x2b";
-		case KEY_SPACE:
-			return "x2c";
-		case KEY_MINUS:
-			return "x2d";
-		case KEY_EQUAL:
-			return "x2e";
-		case KEY_LEFTBRACE:
-			return "x2f";
-		case KEY_RIGHTBRACE:
-			return "x30";
-		case KEY_BACKSLASH:
-			return "x31";
-		case KEY_SEMICOLON:
-			return "x33";
-		case KEY_APOSTROPHE:
-			return "x34";
-		case KEY_GRAVE:
-			return "x35";
-		case KEY_COMMA:
-			return "x36";
-		case KEY_DOT:
-			return "x37";
-		case KEY_SLASH:
-			return "x38";
-                default:
-                        return "0";
-    }
-}
+
 int modVal(int code){
         switch(code){
                 case KEY_LEFTCTRL:
@@ -212,11 +158,12 @@ int modVal(int code){
                         return 0;
         }
 }
+//This function is what actually remaps the keys. 
 int remap(int n){
         switch(n){
 		case KEY_MINUS:
 			return KEY_LEFTBRACE;
-		case KEY_EQUALS:
+		case KEY_EQUAL:
 			return KEY_RIGHTBRACE;
 		case KEY_Q:
 			return KEY_APOSTROPHE;
