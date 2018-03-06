@@ -8,7 +8,7 @@
 #include <stdio.h>
 
 int cToSend(int c);
-void output(FILE out, int mods, int keys[6]);
+void output(FILE *out, int mods, int keys[6]);
 void parse(char input[26], int* mods, int keys[]);
 	
 int main(void){
@@ -47,13 +47,13 @@ int main(void){
 
 		//Just for printing. Delete for speed
 		if(mods == 0){
-			printf("\\0\\0\\%s\\%s\\%s\\%s\\%s\\%s",cToSend(keys[0]),cToSend(keys[1]),cToSend(keys[2]),cToSend(keys[3]),cToSend(keys[4]),cToSend(keys[5]));
+			printf("\\0\\0\\%i\\%i\\%i\\%i\\%i\\%i",cToSend(keys[0]),cToSend(keys[1]),cToSend(keys[2]),cToSend(keys[3]),cToSend(keys[4]),cToSend(keys[5]));
 							                              
 		}
 		else{
-			printf("\\x%02x\\0\\%s\\%s\\%s\\%s\\%s\\%s",mods,cToSend(keys[0]),cToSend(keys[1]),cToSend(keys[2]),cToSend(keys[3]),cToSend(keys[4]),cToSend(keys[5]));
+			printf("\\x%02x\\0\\%i\\%i\\%i\\%i\\%i\\%i",mods,cToSend(keys[0]),cToSend(keys[1]),cToSend(keys[2]),cToSend(keys[3]),cToSend(keys[4]),cToSend(keys[5]));
 		}
-		output(out, mods, keys[]);
+		output(out, mods, keys);
 	}
 	
 }
@@ -81,7 +81,7 @@ void parse(char input[26], int* mods, int keys[]){
 		}
 }
 //Potentially replace fwrite with write
-void output(FILE out, int mods, int keys[6]){
+void output(FILE *out, int mods, int keys[6]){
 	//Hack to have zero pointer 
 	int* zero = 0;
 	fwrite(&mods, 1, 1, out);
