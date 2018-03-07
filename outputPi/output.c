@@ -49,6 +49,11 @@ int main(void){
 	}
 	
 }
+//Parses the input into an len 8 unsigned char array
+//Input should be in format 000:000:000:000:000:000:000:/n/0 where the first 3 numbers are the modifier byte and the rest are key presses
+//The first position is used for modifier keys and is not sent through cToChar
+//The secound position is a oem bit and is empty
+//The rest are used for keypresses and are converter from the linux event value to a usb sendbyte through cToSend()
 void parse(char input[30], unsigned char output[]){
 		//Buffer for holding each number sent by serial
 		char buffer[4];
@@ -57,6 +62,7 @@ void parse(char input[30], unsigned char output[]){
 	
 		for(int i = 0; i < 28; i++){
 			if(input[i] == ':'){
+				//If the section is over put the number into the correct slot
 				bIndex = 0;
 				if(i == 3){
 					//The first segment contains the mod value and should NOT go through cToSend()
@@ -64,18 +70,20 @@ void parse(char input[30], unsigned char output[]){
 					output[0] = atoi(buffer);
 				}
 				else{
-					//All other values shoud go into output[2]-output[7]
+					//All other values should go into output[2]-output[7]
 					//output[1] is the oem byte and should have nothig in it as of now
 					printf("key: %i\n",atoi(buffer));
 					output[(i+1)/4] = cToSend(atoi(buffer));
 				}
 			}
 			else{
+				//If the section is not over load the char into buffer
 				buffer[bIndex] = input[i];
 				bIndex++;
 			}		
 		}
 }
+
 //Converts int to sendcode byte
 unsigned char cToSend(int c){
         switch(c){
