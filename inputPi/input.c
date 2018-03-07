@@ -9,7 +9,6 @@
 
 int set(int s[6],int key);
 int rem(int s[6], int key);
-char* cToSend(char c);
 int remap(int n);
 int modVal(int code);
 void outputPrep(char out[26], int mods, int keys[6]);
