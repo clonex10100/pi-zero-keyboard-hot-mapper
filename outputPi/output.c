@@ -7,20 +7,24 @@
 #include <string.h>
 #include <stdio.h>
 
-int cToSend(int c);
-void output(FILE *out, int mods, int keys[6]);
-void parse(char input[26], int* mods, int keys[]);
+unsigned char cToSend(int c);
+void output(FILE *out, unsigned char keys[8]);
+void parse(char input[26], unsigned char keys[]);
 	
 int main(void){
 	//Buffer for serial input
 	char input[26];
 	
 	//Stores currently pressed keys
-	int keys[6];
-	int mods;
+	unsigned char keys[8];
+	for(int i = 0; i < 8; i++){
+		keys[i] = 0;
+	}
 	
 	//open keyboard port
-	FILE *out = fopen("/dev/hidg0", "wb");
+	//FILE *out = fopen("/dev/hidg0", "wb");
+	int out = open("/dev/hidg0", O_RDWR);
+	//FILE *out = fopen("/home/pi/test.bin", "wb");
 	//Open serial port
 	int in = open("/dev/ttyAMA0", O_RDWR | O_NOCTTY);
 	
@@ -43,35 +47,31 @@ int main(void){
 		printf("%s\n",input);
 		
 		//Parses input into keys and mods
-		parse(input, &mods, keys);
-
+		parse(input, keys);
 		//Just for printing. Delete for speed
-		if(mods == 0){
-			printf("\\0\\0\\%i\\%i\\%i\\%i\\%i\\%i",cToSend(keys[0]),cToSend(keys[1]),cToSend(keys[2]),cToSend(keys[3]),cToSend(keys[4]),cToSend(keys[5]));
-							                              
+		for(int i = 0; i < 8; i++){
+			printf("%i : %i\n",i,keys[i]);
 		}
-		else{
-			printf("\\x%02x\\0\\%i\\%i\\%i\\%i\\%i\\%i",mods,cToSend(keys[0]),cToSend(keys[1]),cToSend(keys[2]),cToSend(keys[3]),cToSend(keys[4]),cToSend(keys[5]));
-		}
-		output(out, mods, keys);
+		printf("%i\n",write(out,&keys,8));
+		//return 0;
 	}
 	
 }
-void parse(char input[26], int* mods, int keys[]){
+void parse(char input[26], unsigned char keys[]){
 		char buffer[4];
 		buffer[3] = '\0'; 
 		int bIndex = 0;
-		for(int i = 0; i < 25; i++){
+		for(int i = 0; i < 24; i++){
 			if(input[i] == ':'){
 				bIndex = 0;
 				if(i == 3){
 					//The : at the 3rd postion is right after a mod int
 					printf("mod: %i\n",atoi(buffer));
-					*mods = atoi(buffer);
+					keys[0] = atoi(buffer);
 				}
 				else{
 					printf("key: %i\n",atoi(buffer));
-					keys[((i-3)/4)] = cToSend(atoi(buffer));
+					keys[(i+1)/2] = cToSend(atoi(buffer));
 				}
 			}
 			else{
@@ -81,16 +81,15 @@ void parse(char input[26], int* mods, int keys[]){
 		}
 }
 //Potentially replace fwrite with write
-void output(FILE *out, int mods, int keys[6]){
+void output(FILE *out, unsigned char keys[8]){
 	//Hack to have zero pointer 
-	int* zero = 0;
-	fwrite(&mods, 1, 1, out);
-	fwrite(zero, 1, 1, out);
+	int zero = 0;
+	fwrite(&zero, 1, 1, out);
 	for(int i = 0; i < 6; i++){
 		fwrite(&keys[i], 1, 1, out);
 	}
 }
-int cToSend(int c){
+unsigned char cToSend(int c){
         switch(c){
 		case KEY_1:
 			return 0x1e;
