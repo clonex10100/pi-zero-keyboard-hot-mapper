@@ -8,23 +8,22 @@
 #include <stdio.h>
 
 unsigned char cToSend(int c);
-void output(FILE *out, unsigned char keys[8]);
 void parse(char input[26], unsigned char keys[]);
 	
 int main(void){
 	//Buffer for serial input
 	char input[26];
 	
-	//Stores currently pressed keys
+	//Stores currently pressed keys and mods for transmitting
+	//Unsigned char is c's byte datatype
 	unsigned char keys[8];
 	for(int i = 0; i < 8; i++){
 		keys[i] = 0;
 	}
 	
 	//open keyboard port
-	//FILE *out = fopen("/dev/hidg0", "wb");
 	int out = open("/dev/hidg0", O_RDWR);
-	//FILE *out = fopen("/home/pi/test.bin", "wb");
+	
 	//Open serial port
 	int in = open("/dev/ttyAMA0", O_RDWR | O_NOCTTY);
 	
@@ -42,34 +41,43 @@ int main(void){
 	tcflush(in, TCIFLUSH);
 	
 	while(1){
-		printf("read\n");
-		printf("%i\n",read(in,input,26));
-		printf("%s\n",input);
+		//printf("read\n");
+		//printf("%i\n",read(in,input,26));
+		//printf("%s\n",input);
 		
 		//Parses input into keys and mods
 		parse(input, keys);
+		
 		//Just for printing. Delete for speed
-		for(int i = 0; i < 8; i++){
-			printf("%i : %i\n",i,keys[i]);
-		}
-		printf("%i\n",write(out,&keys,8));
+		//for(int i = 0; i < 8; i++){
+		//	printf("%i : %i\n",i,keys[i]);
+		//}
+		
+		//printf("%i\n",
+		//Send the keystrokes to the pc.
+		       write(out,&keys,8)
+		      //);
 		//return 0;
 	}
 	
 }
 void parse(char input[26], unsigned char keys[]){
+		//Buffer for holding each number sent by serial
 		char buffer[4];
 		buffer[3] = '\0'; 
 		int bIndex = 0;
+	
 		for(int i = 0; i < 24; i++){
 			if(input[i] == ':'){
 				bIndex = 0;
 				if(i == 3){
-					//The : at the 3rd postion is right after a mod int
+					//The first segment contains the mod value and should NOT go through cToSend()
 					printf("mod: %i\n",atoi(buffer));
 					keys[0] = atoi(buffer);
 				}
 				else{
+					//All other values shoud go into keys[2]-keys[5]
+					//Keys [1] is the oem byte and should have nothig in it as of now
 					printf("key: %i\n",atoi(buffer));
 					keys[(i+1)/2] = cToSend(atoi(buffer));
 				}
@@ -80,15 +88,7 @@ void parse(char input[26], unsigned char keys[]){
 			}		
 		}
 }
-//Potentially replace fwrite with write
-void output(FILE *out, unsigned char keys[8]){
-	//Hack to have zero pointer 
-	int zero = 0;
-	fwrite(&zero, 1, 1, out);
-	for(int i = 0; i < 6; i++){
-		fwrite(&keys[i], 1, 1, out);
-	}
-}
+//Converts int to sendcode byte
 unsigned char cToSend(int c){
         switch(c){
 		case KEY_1:
