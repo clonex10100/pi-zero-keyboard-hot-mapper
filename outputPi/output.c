@@ -64,8 +64,8 @@ void parse(char input[30], unsigned char output[]){
 					output[0] = atoi(buffer);
 				}
 				else{
-					//All other values shoud go into keys[2]-keys[5]
-					//Keys [1] is the oem byte and should have nothig in it as of now
+					//All other values shoud go into output[2]-output[7]
+					//output[1] is the oem byte and should have nothig in it as of now
 					printf("key: %i\n",atoi(buffer));
 					output[(i+1)/4] = cToSend(atoi(buffer));
 				}
