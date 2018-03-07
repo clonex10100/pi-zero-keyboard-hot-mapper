@@ -11,11 +11,11 @@ int set(int s[6],int key);
 int rem(int s[6], int key);
 int remap(int n);
 int modVal(int code);
-void outputPrep(char out[26], int mods, int keys[6]);
+void outputPrep(char out[30], int mods, int keys[6]);
 
 int main(void) {
         //Buffer for serial output
-        char out[26];
+        char out[30];
 	
 	//Holds the value of currenty pressed keys
         int mods = 0;
@@ -76,7 +76,7 @@ int main(void) {
 			printf("%s\n",out);
 			
 			//Wirte to the serial port
-                       	write(serial, out, 26);
+                       	write(serial, out, 30);
 			tcdrain(serial);
                 }
         }
@@ -84,7 +84,7 @@ int main(void) {
 
 //Puts the mods and keys into this format
 //"000:000:000:000:000:/n/0"
-void outputPrep(char out[26], int mods, int keys[6]){
+void outputPrep(char out[30], int mods, int keys[6]){
 	char temp[4];
 	int len;
 	for(int i = 0; i < 7; i++){
@@ -111,8 +111,8 @@ void outputPrep(char out[26], int mods, int keys[6]){
 		}
 		out[i*4+3] = ':';
 	}
-	out[24] = '\n';
-	out[25] = '\0';
+	out[28] = '\n';
+	out[29] = '\0';
 }
 
 //Adds your key to the first empty space in keys
