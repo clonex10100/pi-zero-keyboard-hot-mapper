@@ -27,9 +27,6 @@ int main(void) {
 	//Open keyboard input
         int file = open("/dev/input/event1", O_RDONLY);
 	
-	//Holds keyboard events
-	struct input_event ev;
-	
 	//Open serial port
 	int serial = open("/dev/serial0", O_RDWR | O_NOCTTY);
 	
@@ -43,6 +40,9 @@ int main(void) {
 	cfmakeraw(&options);
 	tcsetattr(serial, TCSANOW, &options);
 	
+	//Holds keyboard events
+	struct input_event ev;
+	
         while(1){
 		//Read new keyboard event
                 read(file, &ev, sizeof ev);
@@ -51,9 +51,10 @@ int main(void) {
                 if (ev.type == EV_KEY && ev.value >= 0 && ev.value <= 2){
 			
 			//Checks if key is a modifier
+			//modVal return 0 if it's not a mod.
                         if(modVal((int)ev.code) != 0){
                                 if((int)ev.value == 1){
-					//If it's a downstorke add the valure to mods
+					//If it's a downstroke add the value to mods
                                         mods += modVal((int)ev.code);
                                 }
                                 else if((int)ev.value == 0){
