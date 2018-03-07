@@ -16,9 +16,9 @@ int main(void){
 	
 	//Stores currently pressed keys and mods for transmitting
 	//Unsigned char is c's byte datatype
-	unsigned char keys[8];
+	unsigned char sendBytes[8];
 	for(int i = 0; i < 8; i++){
-		keys[i] = 0;
+		sendBytes[i] = 0;
 	}
 	
 	//open keyboard port
@@ -41,27 +41,15 @@ int main(void){
 	tcflush(in, TCIFLUSH);
 	
 	while(1){
-		//printf("read\n");
-		//printf("%i\n",read(in,input,26));
-		//printf("%s\n",input);
+		//Parses input
+		parse(input, sendBytes);
 		
-		//Parses input into keys and mods
-		parse(input, keys);
-		
-		//Just for printing. Delete for speed
-		//for(int i = 0; i < 8; i++){
-		//	printf("%i : %i\n",i,keys[i]);
-		//}
-		
-		//printf("%i\n",
 		//Send the keystrokes to the pc.
-		       write(out,&keys,8)
-		      //);
-		//return 0;
+		write(out,&sendBytes,8)
 	}
 	
 }
-void parse(char input[26], unsigned char keys[]){
+void parse(char input[26], unsigned char output[]){
 		//Buffer for holding each number sent by serial
 		char buffer[4];
 		buffer[3] = '\0'; 
@@ -73,13 +61,13 @@ void parse(char input[26], unsigned char keys[]){
 				if(i == 3){
 					//The first segment contains the mod value and should NOT go through cToSend()
 					printf("mod: %i\n",atoi(buffer));
-					keys[0] = atoi(buffer);
+					output[0] = atoi(buffer);
 				}
 				else{
 					//All other values shoud go into keys[2]-keys[5]
 					//Keys [1] is the oem byte and should have nothig in it as of now
 					printf("key: %i\n",atoi(buffer));
-					keys[(i+1)/2] = cToSend(atoi(buffer));
+					output[(i+1)/2] = cToSend(atoi(buffer));
 				}
 			}
 			else{
