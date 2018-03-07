@@ -195,6 +195,54 @@ unsigned char cToSend(int c){
 			return 0x37;
 		case KEY_SLASH:
 			return 0x38;
+		case KEY_F1:
+			return 0x3a;
+		case KEY_F2:
+			return 0x3b;
+		case KEY_F3:
+			return 0x3c;
+		case KEY_F4:
+			return 0x3d;
+		case KEY_F5:
+			return 0x3e;
+		case KEY_F6:
+			return 0x3f;
+		case KEY_F7:
+			return 0x40;
+		case KEY_F8:
+			return 0x41;
+		case KEY_F9:
+			return 0x42;
+		case KEY_F10:
+			return 0x43;
+		case KEY_F11:
+			return 0x44;
+		case KEY_F12:
+			return 0x45;
+		case KEY_SYSRQ:
+			return 0x46;
+		case KEY_PAUSE:
+			return 0x48;
+		case KEY_INSERT:
+			return 0x49;
+		case KEY_HOME:
+			return 0x4a;
+		case KEY_PAGEUP:
+			return 0x4b;
+		case KEY_DELETE:
+			return 0x4c;
+		case KEY_END:
+			return 0x4d;
+		case KEY_PAGEDOWN:
+			return 0x4e;
+		case KEY_RIGHT:
+			return 0x4f;
+		case KEY_LEFT:
+			return 0x50;
+		case KEY_DOWN:
+			return 0x51;
+		case KEY_UP:
+			return 0x52;
                 default:
                         return 0;
     }
