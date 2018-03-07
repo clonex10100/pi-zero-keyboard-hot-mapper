@@ -8,11 +8,11 @@
 #include <stdio.h>
 
 unsigned char cToSend(int c);
-void parse(char input[26], unsigned char keys[]);
+void parse(char input[30], unsigned char keys[]);
 	
 int main(void){
 	//Buffer for serial input
-	char input[26];
+	char input[30];
 	
 	//Stores currently pressed keys and mods for transmitting
 	//Unsigned char is c's byte datatype
@@ -49,13 +49,13 @@ int main(void){
 	}
 	
 }
-void parse(char input[26], unsigned char output[]){
+void parse(char input[30], unsigned char output[]){
 		//Buffer for holding each number sent by serial
 		char buffer[4];
 		buffer[3] = '\0'; 
 		int bIndex = 0;
 	
-		for(int i = 0; i < 24; i++){
+		for(int i = 0; i < 28; i++){
 			if(input[i] == ':'){
 				bIndex = 0;
 				if(i == 3){
@@ -67,7 +67,7 @@ void parse(char input[26], unsigned char output[]){
 					//All other values shoud go into keys[2]-keys[5]
 					//Keys [1] is the oem byte and should have nothig in it as of now
 					printf("key: %i\n",atoi(buffer));
-					output[(i+1)/2] = cToSend(atoi(buffer));
+					output[(i+1)/4] = cToSend(atoi(buffer));
 				}
 			}
 			else{
