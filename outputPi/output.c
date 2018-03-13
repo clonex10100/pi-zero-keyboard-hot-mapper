@@ -41,6 +41,9 @@ int main(void){
 	tcflush(in, TCIFLUSH);
 	
 	while(1){
+		//reads input
+		read(in, &input, 30);
+		
 		//Parses input
 		parse(input, sendBytes);
 		
