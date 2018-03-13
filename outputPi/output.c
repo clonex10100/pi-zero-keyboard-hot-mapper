@@ -7,7 +7,7 @@
 #include <string.h>
 #include <stdio.h>
 
-unsigned char cToSend(int c);
+unsigned char getSendcode(int c);
 void parse(char input[30], unsigned char keys[]);
 	
 int main(void){
@@ -50,10 +50,10 @@ int main(void){
 	
 }
 //Parses the input into an len 8 unsigned char array
-//Input should be in format 000:000:000:000:000:000:000:/n/0 where the first 3 numbers are the modifier byte and the rest are key presses
-//The first position is used for modifier keys and is not sent through cToChar
+//Input should be in format 000:000:000:000:000:000:000:/n/0 where the first 3 numbers are the modifier byte and the rest are key cdose
+//The first position is the modifier byte, not a sendcode.
 //The secound position is a oem bit and is empty
-//The rest are used for keypresses and are converter from the linux event value to a usb sendbyte through cToSend()
+//The rest are used for keypresses and are converter from the linux event value to a usb sendbyte through getSendcode
 void parse(char input[30], unsigned char output[]){
 		//Buffer for holding each number sent by serial
 		char buffer[4];
@@ -65,7 +65,7 @@ void parse(char input[30], unsigned char output[]){
 				//If the section is over put the number into the correct slot
 				bIndex = 0;
 				if(i == 3){
-					//The first segment contains the mod value and should NOT go through cToSend()
+					//The first segment contains the mod value and should not be converted to a sendcode
 					printf("mod: %i\n",atoi(buffer));
 					output[0] = atoi(buffer);
 				}
@@ -73,7 +73,7 @@ void parse(char input[30], unsigned char output[]){
 					//All other values should go into output[2]-output[7]
 					//output[1] is the oem byte and should have nothig in it as of now
 					printf("key: %i\n",atoi(buffer));
-					output[(i+1)/4] = cToSend(atoi(buffer));
+					output[(i+1)/4] = getSendcode(atoi(buffer));
 				}
 			}
 			else{
@@ -85,7 +85,7 @@ void parse(char input[30], unsigned char output[]){
 }
 
 //Converts int to sendcode byte
-unsigned char cToSend(int c){
+unsigned char getSendcode(int c){
         switch(c){
 		case KEY_1:
 			return 0x1e;
